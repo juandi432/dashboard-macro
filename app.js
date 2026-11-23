@@ -67,7 +67,7 @@ let datosGlobales = [];
 let paisesSeleccionados = new Set(["ECU", "COL", "PER", "CHL"]);
 
 // 1. Cargar el archivo CSV al abrir la página
-Papa.parse("data/datos.csv", {
+Papa.parse("datos.csv", {
   download: true,
   header: true,
   dynamicTyping: true,
