@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Macroeconómico — Ecuador e Internacional</title>
+  <!-- Diseño moderno gratuito (Tailwind CSS) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lector de archivos CSV (PapaParse) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <!-- Librería de gráficos interactivos (Plotly.js) -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+  <!-- Encabezado -->
+  <header class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Dashboard Macroeconómico</h1>
+        <p class="text-slate-300 text-sm mt-1">Ecuador y comparación internacional (1994–2026) · Fuentes oficiales</p>
+      </div>
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 w-fit">
+        48 Indicadores · 11 Economías
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+
+    <!-- Tarjetas KPI de Ecuador -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Panorama rápido de Ecuador (último dato disponible)</h2>
+      <div id="kpi-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Se llena automáticamente desde app.js -->
+      </div>
+    </section>
+
+    <!-- Panel de Controles / Filtros -->
+    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-5">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        
+        <!-- Selector de Módulo -->
+        <div class="md:col-span-4">
+          <label for="select-modulo" class="block text-xs font-semibold text-slate-600 uppercase mb-1">1. Módulo temático</label>
+          <select id="select-modulo" class="w-full rounded-lg border-slate-300 border px-3 py-2 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none">
+            <option value="todos">Todos los módulos (48 indicadores)</option>
+            <option value="crecimiento">1. Cuentas Nacionales y Crecimiento</option>
+            <option value="laboral">2. Mercado Laboral</option>
+            <option value="inflacion">3. Inflación y Precios</option>
+            <option value="financiero">4. Condiciones Financieras y Riesgo País</option>
+            <option value="fiscal">5. Sector Fiscal (SPNF)</option>
+            <option value="externo">6. Sector Externo y Balanza de Pagos</option>
+            <option value="productividad">7. Productividad y Preparación Digital</option>
+          </select>
+        </div>
+
+        <!-- Selector de Indicador -->
+        <div class="md:col-span-5">
+          <label for="select-indicador" class="block text-xs font-semibold text-slate-600 uppercase mb-1">2. Indicador económico</label>
+          <select id="select-indicador" class="w-full rounded-lg border-slate-300 border px-3 py-2 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none"></select>
+        </div>
+
+        <!-- Tipo de Gráfico y Años -->
+        <div class="md:col-span-3 grid grid-cols-2 gap-2">
+          <div>
+            <label for="input-anio-ini" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Desde</label>
+            <input id="input-anio-ini" type="number" value="2000" min="1994" max="2026" class="w-full rounded-lg border-slate-300 border px-2.5 py-2 text-sm bg-slate-50" />
+          </div>
+          <div>
+            <label for="input-anio-fin" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Hasta</label>
+            <input id="input-anio-fin" type="number" value="2026" min="1994" max="2026" class="w-full rounded-lg border-slate-300 border px-2.5 py-2 text-sm bg-slate-50" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Selector de Países -->
+      <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <span class="block text-xs font-semibold text-slate-600 uppercase mb-2">3. Países a comparar (los botones en gris no tienen datos para este indicador)</span>
+          <div id="paises-container" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div class="shrink-0">
+          <label for="select-tipo" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Visualización</label>
+          <select id="select-tipo" class="rounded-lg border-slate-300 border px-3 py-1.5 text-sm bg-slate-50">
+            <option value="line">Líneas</option>
+            <option value="bar">Barras</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Área del Gráfico -->
+    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-2 gap-2">
+        <h3 id="titulo-grafico" class="text-lg font-bold text-slate-900">Cargando datos...</h3>
+        <span id="unidad-grafico" class="text-xs font-medium px-2.5 py-1 rounded bg-blue-50 text-blue-700"></span>
+      </div>
+      <div id="grafico" class="w-full h-[440px]"></div>
+    </section>
+
+    <!-- Ficha Técnica y Fuentes Oficiales -->
+    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+      <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Fuentes oficiales y enlaces verificables del indicador seleccionado</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-200 text-xs uppercase text-slate-500">
+              <th class="py-2 pr-4">País</th>
+              <th class="py-2 pr-4">Unidad</th>
+              <th class="py-2 pr-4">Fuente Oficial</th>
+              <th class="py-2">Enlace / API</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-fuentes" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
