@@ -5,14 +5,14 @@ const PAISES = {
 };
 
 const MODULOS = [
-  { id: "todos", titulo: "Todos los módulos", color: "blue" },
-  { id: "crecimiento", titulo: "1. Cuentas Nacionales y Crecimiento", color: "blue" },
-  { id: "laboral", titulo: "2. Mercado Laboral", color: "emerald" },
-  { id: "inflacion", titulo: "3. Inflación y Precios", color: "amber" },
-  { id: "financiero", titulo: "4. Condiciones Financieras y Riesgo País", color: "indigo" },
-  { id: "fiscal", titulo: "5. Sector Fiscal (SPNF)", color: "rose" },
-  { id: "externo", titulo: "6. Sector Externo y Balanza de Pagos", color: "cyan" },
-  { id: "productividad", titulo: "7. Productividad y Preparación Digital", color: "violet" }
+  { id: "todos", titulo: "Vista Global (48)" },
+  { id: "crecimiento", titulo: "I · Cuentas Nacionales" },
+  { id: "laboral", titulo: "II · Mercado Laboral" },
+  { id: "inflacion", titulo: "III · Inflación y Precios" },
+  { id: "financiero", titulo: "IV · Condiciones Financieras" },
+  { id: "fiscal", titulo: "V · Sector Fiscal (SPNF)" },
+  { id: "externo", titulo: "VI · Sector Externo" },
+  { id: "productividad", titulo: "VII · Productividad e IA" }
 ];
 
 const CATALOGO = {
@@ -75,12 +75,9 @@ const CATALOGO = {
 let datosGlobales = [];
 let moduloActivo = "todos";
 let textoBusqueda = "";
-
-// Estado del modal activo
 let indicadorModalActual = null;
 let paisesModalSeleccionados = new Set();
 
-// Carga resiliente del CSV (prueba en raíz y si falla prueba en data/)
 function cargarCSV(ruta, respaldo) {
   Papa.parse(ruta, {
     download: true,
@@ -101,7 +98,7 @@ function cargarCSV(ruta, respaldo) {
         cargarCSV(respaldo, null);
       } else {
         document.getElementById("contenedor-principal").innerHTML = `
-          <div class="bg-red-50 border border-red-200 text-red-800 p-6 rounded-xl text-center">
+          <div class="luxury-card p-8 rounded-2xl text-center text-rose-400">
             No se pudo cargar <strong>datos.csv</strong>. Verifica que el archivo esté en tu repositorio.
           </div>`;
       }
@@ -111,7 +108,6 @@ function cargarCSV(ruta, respaldo) {
 
 cargarCSV("datos.csv", "data/datos.csv");
 
-// Renderizar botones de navegación de los 7 módulos
 function renderizarTabsModulos() {
   const cont = document.getElementById("tabs-modulos");
   cont.innerHTML = "";
@@ -120,8 +116,8 @@ function renderizarTabsModulos() {
     const btn = document.createElement("button");
     btn.textContent = mod.titulo;
     btn.className = activo
-      ? "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-sm transition cursor-pointer"
-      : "px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer";
+      ? "px-4 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-[#E6C767] to-[#B89028] text-slate-950 shadow-md shadow-[#D4AF37]/20 transition cursor-pointer"
+      : "px-4 py-1.5 rounded-full text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition cursor-pointer";
     btn.onclick = () => {
       moduloActivo = mod.id;
       renderizarTabsModulos();
@@ -131,20 +127,21 @@ function renderizarTabsModulos() {
   });
 }
 
-// Generar mini-gráfico SVG rápido para cada tarjeta de la pantalla principal
-function crearMiniSVG(serie) {
+// Mini-gráfico SVG con estética oro champán / platino
+function crearMiniSVG(serie, key) {
   if (!serie || serie.length === 0) return "";
   const w = 260;
   const h = 68;
   const padX = 6;
   const padY = 8;
+  const gradId = `grad-${key.replace(/[^a-zA-Z0-9]/g, "")}`;
 
   if (serie.length === 1) {
     return `
       <svg viewBox="0 0 ${w} ${h}" class="w-full h-16 overflow-visible">
-        <line x1="${padX}" y1="${h / 2}" x2="${w - padX}" y2="${h / 2}" stroke="#e2e8f0" stroke-dasharray="3 3" stroke-width="1.5" />
-        <rect x="${w / 2 - 22}" y="${h / 2 - 12}" width="44" height="24" rx="6" fill="#dbeafe" />
-        <circle cx="${w / 2}" cy="${h / 2}" r="4.5" fill="#2563eb" />
+        <line x1="${padX}" y1="${h / 2}" x2="${w - padX}" y2="${h / 2}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3 3" stroke-width="1" />
+        <rect x="${w / 2 - 24}" y="${h / 2 - 12}" width="48" height="24" rx="6" fill="rgba(212,175,55,0.12)" stroke="rgba(212,175,55,0.4)" />
+        <circle cx="${w / 2}" cy="${h / 2}" r="4" fill="#D4AF37" />
       </svg>`;
   }
 
@@ -164,26 +161,32 @@ function crearMiniSVG(serie) {
   const ultimo = puntos[puntos.length - 1];
   const primero = puntos[0];
   const subio = ultimo.val >= primero.val;
-  const colorLinea = subio ? "#2563eb" : "#e11d48";
-  const colorRelleno = subio ? "rgba(37, 99, 235, 0.10)" : "rgba(225, 29, 72, 0.10)";
 
-  // Línea base cero si hay valores negativos y positivos
+  const colorLinea = subio ? "#D4AF37" : "#F43F5E";
+  const colorStopTop = subio ? "rgba(212, 175, 55, 0.28)" : "rgba(244, 63, 94, 0.25)";
+
   let lineaCero = "";
   if (minV < 0 && maxV > 0) {
     const y0 = h - padY - ((0 - minV) / rango) * (h - padY * 2);
-    lineaCero = `<line x1="${padX}" y1="${y0.toFixed(1)}" x2="${w - padX}" y2="${y0.toFixed(1)}" stroke="#cbd5e1" stroke-dasharray="3 3" stroke-width="1" />`;
+    lineaCero = `<line x1="${padX}" y1="${y0.toFixed(1)}" x2="${w - padX}" y2="${y0.toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3 3" stroke-width="1" />`;
   }
 
   return `
     <svg viewBox="0 0 ${w} ${h}" class="w-full h-16 overflow-visible">
+      <defs>
+        <linearGradient id="${gradId}" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="${colorStopTop}" />
+          <stop offset="100%" stop-color="rgba(0,0,0,0)" />
+        </linearGradient>
+      </defs>
       ${lineaCero}
-      <path d="${pathArea}" fill="${colorRelleno}" />
-      <path d="${pathLinea}" fill="none" stroke="${colorLinea}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="${pathArea}" fill="url(#${gradId})" />
+      <path d="${pathLinea}" fill="none" stroke="${colorLinea}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       <circle cx="${ultimo.x.toFixed(1)}" cy="${ultimo.y.toFixed(1)}" r="3.5" fill="${colorLinea}" />
+      <circle cx="${ultimo.x.toFixed(1)}" cy="${ultimo.y.toFixed(1)}" r="6.5" fill="${colorLinea}" opacity="0.22" />
     </svg>`;
 }
 
-// Renderizar todas las tarjetas agrupadas por módulo en la pantalla principal
 function renderizarCuadriculaPrincipal() {
   const contenedor = document.getElementById("contenedor-principal");
   contenedor.innerHTML = "";
@@ -203,15 +206,18 @@ function renderizarCuadriculaPrincipal() {
     totalMostrados += clavesModulo.length;
 
     const seccion = document.createElement("section");
-    seccion.className = "space-y-4";
+    seccion.className = "space-y-5";
     seccion.innerHTML = `
-      <div class="flex items-center justify-between border-b border-slate-300 pb-2">
-        <h2 class="text-lg sm:text-xl font-bold text-slate-900">${mod.titulo}</h2>
-        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-700">
-          ${clavesModulo.length} ${clavesModulo.length === 1 ? "indicador" : "indicadores"}
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-3">
+          <span class="h-1.5 w-1.5 rotate-45 bg-[#D4AF37]"></span>
+          <h2 class="font-serif-luxury text-xl sm:text-2xl font-semibold text-white tracking-tight">${mod.titulo}</h2>
+        </div>
+        <span class="text-[11px] font-medium tracking-widest uppercase px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-slate-400">
+          ${clavesModulo.length} ${clavesModulo.length === 1 ? "Serie" : "Series"}
         </span>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="grid-${mod.id}"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="grid-${mod.id}"></div>
     `;
     contenedor.appendChild(seccion);
 
@@ -222,7 +228,6 @@ function renderizarCuadriculaPrincipal() {
       if (filasKey.length === 0) return;
 
       const isos = [...new Set(filasKey.map(d => d.iso))];
-      // Priorizar Ecuador como vista previa de tarjeta; si no existe, el primer país disponible
       const isoPrincipal = isos.includes("ECU") ? "ECU" : isos[0];
       const seriePrincipal = filasKey
         .filter(d => d.iso === isoPrincipal)
@@ -233,34 +238,40 @@ function renderizarCuadriculaPrincipal() {
       const valorFmt = Number(ultimoDato.value).toLocaleString("es-EC", { maximumFractionDigits: 2 });
 
       const card = document.createElement("article");
-      card.className = "group bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:shadow-lg hover:border-blue-500 transition-all duration-200 flex flex-col justify-between cursor-pointer";
+      card.className = "luxury-card group rounded-2xl p-5 flex flex-col justify-between cursor-pointer relative overflow-hidden";
       card.onclick = () => abrirModalIndicador(key);
 
       card.innerHTML = `
         <div>
-          <div class="flex items-center justify-between gap-2 mb-2">
-            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${isoPrincipal === "ECU" ? "bg-amber-100 text-amber-900" : "bg-slate-100 text-slate-700"}">
-              ${PAISES[isoPrincipal]} (${isoPrincipal})
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-semibold tracking-wider uppercase ${
+              isoPrincipal === "ECU"
+                ? "bg-[#D4AF37]/15 text-[#F6E6B4] border border-[#D4AF37]/35"
+                : "bg-white/[0.05] text-slate-300 border border-white/10"
+            }">
+              ${PAISES[isoPrincipal]} · ${isoPrincipal}
             </span>
-            <span class="text-[11px] font-medium text-slate-400">
-              ${isos.length} ${isos.length === 1 ? "país" : "países"}
+            <span class="text-[10px] font-medium tracking-wider uppercase text-slate-500">
+              ${isos.length} ${isos.length === 1 ? "mercado" : "mercados"}
             </span>
           </div>
-          <h3 class="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition line-clamp-2 min-h-[2.5rem]">
+
+          <h3 class="text-[13px] font-medium text-slate-300 group-hover:text-white transition line-clamp-2 min-h-[2.4rem] leading-snug">
             ${CATALOGO[key].nombre}
           </h3>
-          <div class="mt-2 flex items-baseline gap-2">
-            <span class="text-2xl font-extrabold text-slate-900">${valorFmt}</span>
-            <span class="text-xs font-semibold text-slate-500">(${ultimoDato.year})</span>
+
+          <div class="mt-3 flex items-baseline gap-2">
+            <span class="font-serif-luxury text-2xl sm:text-[26px] font-bold text-white tabular-nums tracking-tight">${valorFmt}</span>
+            <span class="text-[11px] font-medium text-[#D4AF37] tabular-nums">${ultimoDato.year}</span>
           </div>
-          <p class="text-[11px] text-slate-400 truncate mt-0.5">${ultimoDato.unit}</p>
+          <p class="text-[11px] text-slate-500 truncate mt-1">${ultimoDato.unit}</p>
         </div>
 
-        <div class="mt-3 pt-2 border-t border-slate-100">
-          ${crearMiniSVG(seriePrincipal)}
-          <div class="flex items-center justify-between text-[11px] text-slate-400 mt-1">
-            <span>${primerDato.year} – ${ultimoDato.year}</span>
-            <span class="font-semibold text-blue-600 group-hover:translate-x-0.5 transition-transform">Filtrar país y fecha →</span>
+        <div class="mt-4 pt-3 border-t border-white/[0.06]">
+          ${crearMiniSVG(seriePrincipal, key)}
+          <div class="flex items-center justify-between text-[10px] tracking-wider uppercase text-slate-500 mt-2">
+            <span class="tabular-nums">${primerDato.year} — ${ultimoDato.year}</span>
+            <span class="font-semibold text-[#D4AF37] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">Analizar →</span>
           </div>
         </div>
       `;
@@ -271,13 +282,12 @@ function renderizarCuadriculaPrincipal() {
 
   if (totalMostrados === 0) {
     contenedor.innerHTML = `
-      <div class="bg-white rounded-xl border border-slate-200 p-10 text-center text-slate-500">
-        No se encontraron indicadores que coincidan con "<strong>${textoBusqueda}</strong>".
+      <div class="luxury-card rounded-2xl p-12 text-center text-slate-400">
+        No existen series registradas bajo el criterio "<strong class="text-white">${textoBusqueda}</strong>".
       </div>`;
   }
 }
 
-// Abrir el modal interactivo al hacer clic en una tarjeta
 function abrirModalIndicador(key) {
   indicadorModalActual = key;
   const filas = datosGlobales.filter(d => d.key === key && d.value !== null);
@@ -286,8 +296,6 @@ function abrirModalIndicador(key) {
   const maxAnio = Math.max(...anios);
 
   const isosDisponibles = [...new Set(filas.map(d => d.iso))];
-
-  // Por defecto activar Ecuador y hasta 3 comparadores regionales disponibles
   const preferidos = ["ECU", "COL", "PER", "CHL", "USA", "CHN"];
   const iniciales = preferidos.filter(iso => isosDisponibles.includes(iso)).slice(0, 4);
   paisesModalSeleccionados = new Set(iniciales.length > 0 ? iniciales : [isosDisponibles[0]]);
@@ -297,7 +305,7 @@ function abrirModalIndicador(key) {
 
   document.getElementById("modal-modulo").textContent = modObj ? modObj.titulo : "";
   document.getElementById("modal-titulo").textContent = info.nombre;
-  document.getElementById("modal-unidad").textContent = `Unidad: ${filas[0].unit} · Cobertura histórica: ${minAnio}–${maxAnio}`;
+  document.getElementById("modal-unidad").textContent = `Unidad de medida: ${filas[0].unit}  ·  Ventana histórica: ${minAnio}–${maxAnio}`;
 
   const inputIni = document.getElementById("modal-anio-ini");
   const inputFin = document.getElementById("modal-anio-fin");
@@ -331,21 +339,19 @@ function actualizarGraficoModal() {
   const filasIndicador = datosGlobales.filter(d => d.key === key && d.value !== null);
   const isosDisponibles = new Set(filasIndicador.map(d => d.iso));
 
-  // Dibujar botones de países en el modal
   const contPaises = document.getElementById("modal-paises");
   contPaises.innerHTML = "";
 
   Object.keys(PAISES).forEach(iso => {
-    const disponible = isosDisponibles.has(iso);
-    if (!disponible) return; // Mostrar solo los países que sí tienen datos para este indicador
+    if (!isosDisponibles.has(iso)) return;
 
     const activo = paisesModalSeleccionados.has(iso);
     const btn = document.createElement("button");
     btn.type = "button";
     btn.textContent = `${PAISES[iso]} (${iso})`;
     btn.className = activo
-      ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-sm transition cursor-pointer"
-      : "px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 transition cursor-pointer";
+      ? "px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#E6C767] to-[#B89028] text-slate-950 shadow-sm transition cursor-pointer"
+      : "px-3 py-1.5 rounded-lg text-xs font-medium bg-[#141822] text-slate-300 border border-white/10 hover:border-[#D4AF37]/50 transition cursor-pointer";
 
     btn.onclick = () => {
       if (paisesModalSeleccionados.has(iso)) {
@@ -358,26 +364,32 @@ function actualizarGraficoModal() {
     contPaises.appendChild(btn);
   });
 
-  // Construir series para Plotly
   const filasFiltradas = filasIndicador.filter(
     d => paisesModalSeleccionados.has(d.iso) && Number(d.year) >= anioIni && Number(d.year) <= anioFin
   );
 
+  // Paleta de metales y joyas para los países
+  const paletaLujo = ["#E2E8F0", "#38BDF8", "#34D399", "#F472B6", "#A78BFA", "#FB923C", "#94A3B8", "#2DD4BF"];
+  let idxColor = 0;
   const trazas = [];
+
   paisesModalSeleccionados.forEach(iso => {
     const serie = filasFiltradas
       .filter(d => d.iso === iso)
       .sort((a, b) => a.year - b.year);
 
     if (serie.length > 0) {
+      const esEcuador = iso === "ECU";
+      const colorSerie = esEcuador ? "#D4AF37" : paletaLujo[idxColor++ % paletaLujo.length];
+
       trazas.push({
         x: serie.map(d => d.year),
         y: serie.map(d => d.value),
         name: `${PAISES[iso]} (${iso})`,
         type: serie.length === 1 || tipo === "bar" ? "bar" : "scatter",
         mode: "lines+markers",
-        line: { width: iso === "ECU" ? 3.5 : 2 },
-        marker: { size: 6 }
+        line: { width: esEcuador ? 3.5 : 2, color: colorSerie },
+        marker: { size: esEcuador ? 7 : 5, color: colorSerie }
       });
     }
   });
@@ -385,16 +397,30 @@ function actualizarGraficoModal() {
   const unidad = filasIndicador[0]?.unit || "";
 
   Plotly.newPlot("modal-grafico", trazas, {
-    margin: { t: 15, r: 20, b: 45, l: 60 },
+    margin: { t: 15, r: 20, b: 50, l: 65 },
     hovermode: "x unified",
-    xaxis: { title: "Año", tickformat: "d", gridcolor: "#f1f5f9" },
-    yaxis: { title: unidad, gridcolor: "#f1f5f9", zerolinecolor: "#cbd5e1" },
-    legend: { orientation: "h", y: -0.22 },
-    paper_bgcolor: "white",
-    plot_bgcolor: "white"
+    font: { family: "Plus Jakarta Sans, sans-serif", color: "#CBD5E1" },
+    hoverlabel: {
+      bgcolor: "#141822",
+      bordercolor: "#D4AF37",
+      font: { color: "#F8FAFC", size: 12 }
+    },
+    xaxis: {
+      title: { text: "Año", font: { size: 11, color: "#94A3B8" } },
+      tickformat: "d",
+      gridcolor: "rgba(255,255,255,0.06)",
+      linecolor: "rgba(255,255,255,0.1)"
+    },
+    yaxis: {
+      title: { text: unidad, font: { size: 11, color: "#94A3B8" } },
+      gridcolor: "rgba(255,255,255,0.06)",
+      zerolinecolor: "rgba(212,175,55,0.3)"
+    },
+    legend: { orientation: "h", y: -0.22, font: { color: "#E2E8F0" } },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(0,0,0,0)"
   }, { responsive: true });
 
-  // Actualizar tabla de fuentes oficiales
   const tbody = document.getElementById("modal-fuentes");
   tbody.innerHTML = "";
   const fuentesUnicas = new Map();
@@ -404,13 +430,13 @@ function actualizarGraficoModal() {
 
   fuentesUnicas.forEach((d, iso) => {
     tbody.innerHTML += `
-      <tr>
-        <td class="py-2.5 px-3 font-bold text-slate-800 whitespace-nowrap">${PAISES[iso]} (${iso})</td>
-        <td class="py-2.5 px-3 text-slate-600">${d.unit}</td>
-        <td class="py-2.5 px-3 text-slate-700">${d.source}</td>
-        <td class="py-2.5 px-3 whitespace-nowrap">
-          <a href="${d.url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-semibold hover:underline">
-            Abrir fuente ↗
+      <tr class="hover:bg-white/[0.02] transition">
+        <td class="py-3 px-3.5 font-semibold text-white whitespace-nowrap">${PAISES[iso]} (${iso})</td>
+        <td class="py-3 px-3.5 text-slate-400">${d.unit}</td>
+        <td class="py-3 px-3.5 text-slate-300">${d.source}</td>
+        <td class="py-3 px-3.5 whitespace-nowrap">
+          <a href="${d.url}" target="_blank" rel="noopener noreferrer" class="text-[#D4AF37] font-semibold hover:text-[#F6E6B4] transition">
+            Verificar fuente ↗
           </a>
         </td>
       </tr>
@@ -418,7 +444,6 @@ function actualizarGraficoModal() {
   });
 }
 
-// Eventos globales
 document.getElementById("buscador").addEventListener("input", e => {
   textoBusqueda = e.target.value;
   renderizarCuadriculaPrincipal();
