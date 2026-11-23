@@ -3,76 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Observatorio Macroeconómico — Matte Black & Pastel Pink</title>
+  <title>Observatorio Macroeconómico — Black & Pastel Rose</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #050506;
+      background-color: #040405;
       color: #F4F4F6;
       background-image:
-        radial-gradient(ellipse 75% 45% at 50% -15%, rgba(245, 183, 213, 0.11), transparent),
-        radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.025), transparent 40%);
+        radial-gradient(ellipse 75% 45% at 50% -15%, rgba(244, 169, 200, 0.11), transparent);
     }
-    .font-mono-tech {
-      font-family: 'JetBrains Mono', monospace;
+    .font-serif-luxury {
+      font-family: 'Playfair Display', Georgia, serif;
     }
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
-    .oc-pink-text {
-      background: linear-gradient(135deg, #FFFFFF 0%, #FAD4E6 45%, #F2A2C8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .ousi-pink-text {
+      color: #F4A9C8;
     }
     .luxury-card {
-      background: linear-gradient(160deg, #0E0E11 0%, #08080A 100%);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: 0 12px 30px -15px rgba(0, 0, 0, 0.95), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+      background: linear-gradient(160deg, #101013 0%, #09090B 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 30px -15px rgba(0, 0, 0, 0.95);
       transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .luxury-card:hover {
       transform: translateY(-3px);
-      border-color: rgba(245, 183, 213, 0.55);
+      border-color: rgba(244, 169, 200, 0.6);
       box-shadow:
         0 20px 40px -15px rgba(0, 0, 0, 0.98),
-        0 0 25px -8px rgba(245, 183, 213, 0.22),
-        inset 0 1px 0 0 rgba(250, 212, 230, 0.15);
+        0 0 24px -8px rgba(244, 169, 200, 0.22);
     }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #050506; }
-    ::-webkit-scrollbar-thumb { background: #222226; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #F5B7D5; }
+    ::-webkit-scrollbar-track { background: #050507; }
+    ::-webkit-scrollbar-thumb { background: #222228; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #F4A9C8; }
   </style>
 </head>
-<body class="min-h-screen antialiased selection:bg-[#F5B7D5] selection:text-black">
+<body class="min-h-screen antialiased selection:bg-[#F4A9C8] selection:text-[#050507]">
 
-  <!-- Encabezado Negro Carbón & Rosa Pastel -->
-  <header class="border-b border-white/[0.07] bg-[#050506]/90 backdrop-blur-xl sticky top-0 z-40">
+  <!-- Encabezado Negro Puro & Rosa Pastel -->
+  <header class="border-b border-white/[0.08] bg-[#050507]/90 backdrop-blur-xl sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
       <div class="flex items-start sm:items-center gap-4">
-        <!-- Chip minimalista negro mate con borde rosa pastel -->
-        <div class="hidden sm:flex h-11 w-11 shrink-0 rounded-xl bg-[#0D0D10] border border-[#F5B7D5]/40 items-center justify-center">
-          <div class="h-5 w-7 rounded-[4px] border border-[#F5B7D5]/80 grid grid-cols-2 gap-[2px] p-[3px]">
-            <span class="border border-[#F5B7D5]/40 rounded-[1px]"></span>
-            <span class="border border-[#F5B7D5]/40 rounded-[1px]"></span>
+        <!-- Emblema minimalista tarjeta negra con borde rosa pastel -->
+        <div class="hidden sm:flex h-11 w-11 shrink-0 rounded-xl bg-[#0D0D10] border border-[#F4A9C8]/45 items-center justify-center">
+          <div class="h-5 w-7 rounded-[4px] border border-[#F4A9C8]/85 grid grid-cols-2 gap-[2px] p-[3px]">
+            <span class="border border-[#F4A9C8]/45 rounded-[1px]"></span>
+            <span class="border border-[#F4A9C8]/45 rounded-[1px]"></span>
           </div>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full bg-[#F5B7D5]"></span>
-            <span class="font-mono-tech text-[10px] font-medium uppercase tracking-[0.25em] text-[#F5B7D5]">Macro Terminal · Black Edition</span>
+          <div class="flex items-center gap-2.5">
+            <span class="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#F4A9C8]">Private Macro Research · Black Edition</span>
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-0.5">
-            Observatorio <span class="oc-pink-text">Macroeconómico</span>
+          <h1 class="font-serif-luxury text-2xl sm:text-3xl font-semibold tracking-tight text-white mt-0.5">
+            Observatorio <span class="ousi-pink-text">Macroeconómico</span>
           </h1>
-          <p class="text-zinc-400 text-xs mt-0.5">
-            Ecuador y comparación internacional (1994–2026) · Haz clic en cualquier tarjeta para filtrar por país y fecha
+          <p class="text-zinc-400 text-xs mt-0.5 tracking-wide">
+            Inteligencia económica soberana y comparativa internacional (1994–2026) · Haz clic en cualquier serie para filtrar país y fecha
           </p>
         </div>
       </div>
@@ -84,15 +79,15 @@
           <input
             id="buscador"
             type="text"
-            placeholder="Buscar serie (PIB, EMBI, inflación...)"
-            class="w-full rounded-xl bg-[#0C0C0F] border border-white/10 text-xs text-zinc-100 placeholder-zinc-500 pl-4 pr-10 py-3 focus:outline-none focus:border-[#F5B7D5] focus:ring-1 focus:ring-[#F5B7D5]/30 transition"
+            placeholder="Filtrar serie (PIB, EMBI, inflación...)"
+            class="w-full rounded-xl bg-[#0D0D10] border border-white/10 text-xs text-white placeholder-zinc-500 pl-4 pr-10 py-3 focus:outline-none focus:border-[#F4A9C8] focus:ring-1 focus:ring-[#F4A9C8]/30 transition"
           />
-          <span class="absolute right-3.5 top-2.5 text-[#F5B7D5] text-sm">⌕</span>
+          <span class="absolute right-3.5 top-2.5 text-[#F4A9C8] text-sm">⌕</span>
         </div>
       </div>
     </div>
 
-    <!-- Barra de pestañas por módulo -->
+    <!-- Barra de navegación por módulos -->
     <div class="border-t border-white/[0.06] bg-[#070709]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 overflow-x-auto">
         <div id="tabs-modulos" class="flex items-center gap-2 min-w-max"></div>
@@ -102,58 +97,58 @@
 
   <!-- Cuadrícula principal de tarjetas -->
   <main id="contenedor-principal" class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 space-y-12">
-    <div class="text-center py-24 font-mono-tech text-zinc-500 text-xs tracking-widest uppercase">Cargando terminal macroeconómica...</div>
+    <div class="text-center py-24 text-zinc-400 text-sm tracking-widest uppercase">Inicializando terminal macroeconómica...</div>
   </main>
 
   <!-- Pie de página -->
-  <footer class="border-t border-white/[0.06] mt-16 py-8 text-center">
-    <p class="font-mono-tech tracking-widest uppercase text-[10px] text-zinc-500">Datos Oficiales Verificados · BCE, INEC, FMI, Banco Mundial & Reserva Federal</p>
+  <footer class="border-t border-white/[0.06] mt-16 py-8 text-center text-xs text-zinc-500">
+    <p class="tracking-widest uppercase text-[10px] text-zinc-400">Datos Oficiales Verificados · Banco Central del Ecuador, INEC, FMI, Banco Mundial & Reserva Federal</p>
   </footer>
 
-  <!-- Modal interactivo al hacer clic en una tarjeta -->
+  <!-- Modal de análisis profundo al hacer clic en una tarjeta -->
   <div id="modal-detalle" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md overflow-y-auto p-3 sm:p-6">
     <div class="min-h-full flex items-center justify-center">
-      <div class="bg-[#09090B] w-full max-w-5xl rounded-2xl shadow-2xl border border-[#F5B7D5]/35 overflow-hidden my-4">
+      <div class="bg-[#09090B] w-full max-w-5xl rounded-2xl shadow-2xl border border-[#F4A9C8]/35 overflow-hidden my-4">
         
         <!-- Cabecera del Modal -->
-        <div class="bg-[#0E0E12] px-6 py-5 border-b border-white/[0.08] flex items-start justify-between gap-4">
+        <div class="bg-[#0E0E12] px-6 py-5 border-b border-white/10 flex items-start justify-between gap-4">
           <div>
-            <span id="modal-modulo" class="font-mono-tech text-[10px] font-medium uppercase tracking-[0.22em] text-[#F5B7D5]"></span>
-            <h2 id="modal-titulo" class="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1"></h2>
+            <span id="modal-modulo" class="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F4A9C8]"></span>
+            <h2 id="modal-titulo" class="font-serif-luxury text-xl sm:text-2xl font-semibold text-white mt-1"></h2>
             <p id="modal-unidad" class="text-xs text-zinc-400 mt-1"></p>
           </div>
-          <button id="btn-cerrar-modal" class="rounded-xl bg-white/[0.05] hover:bg-[#F5B7D5] border border-white/10 hover:border-[#F5B7D5] text-zinc-300 hover:text-black px-3.5 py-2 text-xs font-bold tracking-wider uppercase transition cursor-pointer">
+          <button id="btn-cerrar-modal" class="rounded-xl bg-white/[0.04] hover:bg-[#F4A9C8] border border-white/10 hover:border-[#F4A9C8] text-zinc-300 hover:text-[#050507] px-3.5 py-2 text-xs font-bold tracking-wider uppercase transition cursor-pointer">
             ✕ Cerrar
           </button>
         </div>
 
         <!-- Controles de Fecha y País -->
-        <div class="p-5 bg-[#060608] border-b border-white/[0.07] space-y-4">
+        <div class="p-5 bg-[#060608] border-b border-white/[0.08] space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
             
             <!-- Rango de años -->
             <div class="md:col-span-5 grid grid-cols-2 gap-3">
               <div>
-                <label for="modal-anio-ini" class="block font-mono-tech text-[10px] font-medium text-zinc-400 uppercase tracking-widest mb-1.5">Año desde</label>
-                <input id="modal-anio-ini" type="number" class="w-full rounded-xl border border-white/12 bg-[#0E0E12] text-white px-3 py-2 text-sm font-semibold tabular-nums focus:border-[#F5B7D5] outline-none" />
+                <label for="modal-anio-ini" class="block text-[10px] font-semibold text-zinc-400 uppercase tracking-widest mb-1.5">Año desde</label>
+                <input id="modal-anio-ini" type="number" class="w-full rounded-xl border border-white/15 bg-[#111115] text-white px-3 py-2 text-sm font-medium tabular-nums focus:border-[#F4A9C8] outline-none" />
               </div>
               <div>
-                <label for="modal-anio-fin" class="block font-mono-tech text-[10px] font-medium text-zinc-400 uppercase tracking-widest mb-1.5">Año hasta</label>
-                <input id="modal-anio-fin" type="number" class="w-full rounded-xl border border-white/12 bg-[#0E0E12] text-white px-3 py-2 text-sm font-semibold tabular-nums focus:border-[#F5B7D5] outline-none" />
+                <label for="modal-anio-fin" class="block text-[10px] font-semibold text-zinc-400 uppercase tracking-widest mb-1.5">Año hasta</label>
+                <input id="modal-anio-fin" type="number" class="w-full rounded-xl border border-white/15 bg-[#111115] text-white px-3 py-2 text-sm font-medium tabular-nums focus:border-[#F4A9C8] outline-none" />
               </div>
             </div>
 
             <!-- Atajos rápidos de fecha -->
             <div class="md:col-span-5 flex flex-wrap gap-2">
-              <button type="button" data-rango="todo" class="btn-rango px-3 py-2 rounded-xl text-xs font-medium bg-[#111115] border border-white/10 hover:border-[#F5B7D5]/60 text-zinc-200 transition cursor-pointer">Todo el histórico</button>
-              <button type="button" data-rango="10" class="btn-rango px-3 py-2 rounded-xl text-xs font-medium bg-[#111115] border border-white/10 hover:border-[#F5B7D5]/60 text-zinc-200 transition cursor-pointer">Últimos 10 años</button>
-              <button type="button" data-rango="5" class="btn-rango px-3 py-2 rounded-xl text-xs font-medium bg-[#111115] border border-white/10 hover:border-[#F5B7D5]/60 text-zinc-200 transition cursor-pointer">Últimos 5 años</button>
+              <button type="button" data-rango="todo" class="btn-rango px-3 py-2 rounded-xl text-xs font-medium bg-[#121216] border border-white/10 hover:border-[#F4A9C8] text-zinc-200 transition cursor-pointer">Todo el histórico</button>
+              <button type="button" data-rango="10" class="btn-rango px-3 py-2 rounded-xl text-xs font-medium bg-[#121216] border border-white/10 hover:border-[#F4A9C8] text-zinc-200 transition cursor-pointer">Últimos 10 años</button>
+              <button type="button" data-rango="5" class="btn-rango px-3 py-2 rounded-xl text-xs font-medium bg-[#121216] border border-white/10 hover:border-[#F4A9C8] text-zinc-200 transition cursor-pointer">Últimos 5 años</button>
             </div>
 
             <!-- Tipo de visualización -->
             <div class="md:col-span-2">
-              <label for="modal-tipo" class="block font-mono-tech text-[10px] font-medium text-zinc-400 uppercase tracking-widest mb-1.5">Formato</label>
-              <select id="modal-tipo" class="w-full rounded-xl border border-white/12 bg-[#0E0E12] text-white px-3 py-2 text-sm font-semibold outline-none focus:border-[#F5B7D5]">
+              <label for="modal-tipo" class="block text-[10px] font-semibold text-zinc-400 uppercase tracking-widest mb-1.5">Formato</label>
+              <select id="modal-tipo" class="w-full rounded-xl border border-white/15 bg-[#111115] text-white px-3 py-2 text-sm font-medium outline-none focus:border-[#F4A9C8]">
                 <option value="line">Líneas</option>
                 <option value="bar">Barras</option>
               </select>
@@ -163,11 +158,11 @@
           <!-- Selector de países -->
           <div class="pt-3.5 border-t border-white/[0.06]">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-              <span class="font-mono-tech text-[10px] font-medium text-zinc-400 uppercase tracking-widest">Economías disponibles:</span>
+              <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Economías disponibles para comparar:</span>
               <div class="flex gap-3">
-                <button id="btn-solo-ecu" type="button" class="text-xs font-semibold text-[#F5B7D5] hover:text-white transition cursor-pointer">Solo Ecuador</button>
+                <button id="btn-solo-ecu" type="button" class="text-xs font-semibold text-[#F4A9C8] hover:underline transition cursor-pointer">Solo Ecuador</button>
                 <span class="text-zinc-700">|</span>
-                <button id="btn-todos-paises" type="button" class="text-xs font-semibold text-[#F5B7D5] hover:text-white transition cursor-pointer">Seleccionar todas</button>
+                <button id="btn-todos-paises" type="button" class="text-xs font-semibold text-[#F4A9C8] hover:underline transition cursor-pointer">Seleccionar todas</button>
               </div>
             </div>
             <div id="modal-paises" class="flex flex-wrap gap-2"></div>
@@ -175,5 +170,32 @@
         </div>
 
         <!-- Gráfico interactivo ampliado -->
-        <div class="p-5 bg-[#
-          
+        <div class="p-5 bg-[#09090B]">
+          <div id="modal-grafico" class="w-full h-[380px]"></div>
+        </div>
+
+        <!-- Fuentes verificables -->
+        <div class="px-6 pb-6 bg-[#09090B]">
+          <h3 class="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#F4A9C8] mb-2.5">Auditoría de fuentes oficiales</h3>
+          <div class="overflow-x-auto border border-white/10 rounded-xl bg-[#060608]">
+            <table class="min-w-full text-xs text-left">
+              <thead class="bg-white/[0.03] text-zinc-400 uppercase text-[10px] tracking-wider border-b border-white/10">
+                <tr>
+                  <th class="py-3 px-3.5">Economía</th>
+                  <th class="py-3 px-3.5">Unidad</th>
+                  <th class="py-3 px-3.5">Entidad / Fuente Oficial</th>
+                  <th class="py-3 px-3.5">Respaldo</th>
+                </tr>
+              </thead>
+              <tbody id="modal-fuentes" class="divide-y divide-white/[0.06]"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
