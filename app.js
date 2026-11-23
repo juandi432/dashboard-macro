@@ -98,7 +98,7 @@ function cargarCSV(ruta, respaldo) {
         cargarCSV(respaldo, null);
       } else {
         document.getElementById("contenedor-principal").innerHTML = `
-          <div class="luxury-card p-8 rounded-2xl text-center text-[#F4A9C8]">
+          <div class="luxury-card p-8 rounded-2xl text-center text-[#1FF01A]">
             No se pudo cargar <strong>datos.csv</strong>. Verifica que el archivo esté en tu repositorio.
           </div>`;
       }
@@ -116,8 +116,8 @@ function renderizarTabsModulos() {
     const btn = document.createElement("button");
     btn.textContent = mod.titulo;
     btn.className = activo
-      ? "px-4 py-1.5 rounded-full text-xs font-bold bg-[#F4A9C8] text-[#050507] shadow-sm transition cursor-pointer"
-      : "px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/[0.05] border border-transparent hover:border-[#F4A9C8]/35 transition cursor-pointer";
+      ? "px-4 py-1.5 rounded-full text-xs font-bold bg-[#1FF01A] text-[#040504] shadow-sm shadow-[#1FF01A]/25 transition cursor-pointer"
+      : "px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/[0.05] border border-transparent hover:border-[#1FF01A]/40 transition cursor-pointer";
     btn.onclick = () => {
       moduloActivo = mod.id;
       renderizarTabsModulos();
@@ -127,7 +127,7 @@ function renderizarTabsModulos() {
   });
 }
 
-// Mini-gráfico SVG con rosa pastel mate (#F4A9C8) y plata (#A1A1AA) sobre negro
+// Mini-gráfico SVG con verde Ferxxo (#1FF01A) y plata (#D4D4D8) sobre negro
 function crearMiniSVG(serie, key) {
   if (!serie || serie.length === 0) return "";
   const w = 260;
@@ -140,8 +140,8 @@ function crearMiniSVG(serie, key) {
     return `
       <svg viewBox="0 0 ${w} ${h}" class="w-full h-16 overflow-visible">
         <line x1="${padX}" y1="${h / 2}" x2="${w - padX}" y2="${h / 2}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3 3" stroke-width="1" />
-        <rect x="${w / 2 - 24}" y="${h / 2 - 12}" width="48" height="24" rx="6" fill="rgba(244,169,200,0.12)" stroke="rgba(244,169,200,0.5)" />
-        <circle cx="${w / 2}" cy="${h / 2}" r="4" fill="#F4A9C8" />
+        <rect x="${w / 2 - 24}" y="${h / 2 - 12}" width="48" height="24" rx="6" fill="rgba(31,240,26,0.12)" stroke="rgba(31,240,26,0.5)" />
+        <circle cx="${w / 2}" cy="${h / 2}" r="4" fill="#1FF01A" />
       </svg>`;
   }
 
@@ -162,8 +162,8 @@ function crearMiniSVG(serie, key) {
   const primero = puntos[0];
   const subio = ultimo.val >= primero.val;
 
-  const colorLinea = subio ? "#F4A9C8" : "#D4D4D8";
-  const colorStopTop = subio ? "rgba(244, 169, 200, 0.24)" : "rgba(212, 212, 216, 0.14)";
+  const colorLinea = subio ? "#1FF01A" : "#D4D4D8";
+  const colorStopTop = subio ? "rgba(31, 240, 26, 0.24)" : "rgba(212, 212, 216, 0.14)";
 
   let lineaCero = "";
   if (minV < 0 && maxV > 0) {
@@ -183,7 +183,7 @@ function crearMiniSVG(serie, key) {
       <path d="${pathArea}" fill="url(#${gradId})" />
       <path d="${pathLinea}" fill="none" stroke="${colorLinea}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       <circle cx="${ultimo.x.toFixed(1)}" cy="${ultimo.y.toFixed(1)}" r="3.5" fill="${colorLinea}" />
-      <circle cx="${ultimo.x.toFixed(1)}" cy="${ultimo.y.toFixed(1)}" r="6.5" fill="${colorLinea}" opacity="0.22" />
+      <circle cx="${ultimo.x.toFixed(1)}" cy="${ultimo.y.toFixed(1)}" r="6.5" fill="${colorLinea}" opacity="0.25" />
     </svg>`;
 }
 
@@ -210,7 +210,7 @@ function renderizarCuadriculaPrincipal() {
     seccion.innerHTML = `
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-3">
-          <span class="h-1.5 w-1.5 rotate-45 bg-[#F4A9C8]"></span>
+          <span class="h-1.5 w-1.5 rotate-45 bg-[#1FF01A]"></span>
           <h2 class="font-serif-luxury text-xl sm:text-2xl font-semibold text-white tracking-tight">${mod.titulo}</h2>
         </div>
         <span class="text-[11px] font-medium tracking-widest uppercase px-3 py-1 rounded-full bg-white/[0.03] border border-white/10 text-zinc-400">
@@ -244,9 +244,9 @@ function renderizarCuadriculaPrincipal() {
       card.innerHTML = `
         <div>
           <div class="flex items-center justify-between gap-2 mb-3">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-semibold tracking-wider uppercase ${
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase ${
               isoPrincipal === "ECU"
-                ? "bg-[#F4A9C8]/15 text-[#FAD4E4] border border-[#F4A9C8]/40"
+                ? "bg-[#1FF01A]/15 text-[#88FF85] border border-[#1FF01A]/40"
                 : "bg-white/[0.04] text-zinc-300 border border-white/10"
             }">
               ${PAISES[isoPrincipal]} · ${isoPrincipal}
@@ -262,7 +262,7 @@ function renderizarCuadriculaPrincipal() {
 
           <div class="mt-3 flex items-baseline gap-2">
             <span class="font-serif-luxury text-2xl sm:text-[26px] font-bold text-white tabular-nums tracking-tight">${valorFmt}</span>
-            <span class="text-[11px] font-semibold text-[#F4A9C8] tabular-nums">${ultimoDato.year}</span>
+            <span class="text-[11px] font-bold text-[#1FF01A] tabular-nums">${ultimoDato.year}</span>
           </div>
           <p class="text-[11px] text-zinc-500 truncate mt-1">${ultimoDato.unit}</p>
         </div>
@@ -271,7 +271,7 @@ function renderizarCuadriculaPrincipal() {
           ${crearMiniSVG(seriePrincipal, key)}
           <div class="flex items-center justify-between text-[10px] tracking-wider uppercase text-zinc-500 mt-2">
             <span class="tabular-nums">${primerDato.year} — ${ultimoDato.year}</span>
-            <span class="font-semibold text-[#F4A9C8] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">Analizar →</span>
+            <span class="font-bold text-[#1FF01A] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">Analizar →</span>
           </div>
         </div>
       `;
@@ -350,8 +350,8 @@ function actualizarGraficoModal() {
     btn.type = "button";
     btn.textContent = `${PAISES[iso]} (${iso})`;
     btn.className = activo
-      ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#F4A9C8] text-[#050507] shadow-sm transition cursor-pointer"
-      : "px-3 py-1.5 rounded-lg text-xs font-medium bg-[#121216] text-zinc-300 border border-white/10 hover:border-[#F4A9C8]/60 transition cursor-pointer";
+      ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#1FF01A] text-[#040504] shadow-sm shadow-[#1FF01A]/25 transition cursor-pointer"
+      : "px-3 py-1.5 rounded-lg text-xs font-medium bg-[#101410] text-zinc-300 border border-white/10 hover:border-[#1FF01A]/60 transition cursor-pointer";
 
     btn.onclick = () => {
       if (paisesModalSeleccionados.has(iso)) {
@@ -368,8 +368,8 @@ function actualizarGraficoModal() {
     d => paisesModalSeleccionados.has(d.iso) && Number(d.year) >= anioIni && Number(d.year) <= anioFin
   );
 
-  // Ecuador en rosa pastel Omar Courtz (#F4A9C8) + colores limpios y sobrios para comparadores
-  const paletaSobria = ["#FFFFFF", "#38BDF8", "#A1A1AA", "#34D399", "#FBBF24", "#64748B", "#2DD4BF", "#FB923C"];
+  // Ecuador en verde Ferxxo (#1FF01A) + colores limpios de alto contraste para comparadores
+  const paletaSobria = ["#FFFFFF", "#38BDF8", "#A1A1AA", "#FACC15", "#2DD4BF", "#FB923C", "#C084FC", "#94A3B8"];
   let idxColor = 0;
   const trazas = [];
 
@@ -380,7 +380,7 @@ function actualizarGraficoModal() {
 
     if (serie.length > 0) {
       const esEcuador = iso === "ECU";
-      const colorSerie = esEcuador ? "#F4A9C8" : paletaSobria[idxColor++ % paletaSobria.length];
+      const colorSerie = esEcuador ? "#1FF01A" : paletaSobria[idxColor++ % paletaSobria.length];
 
       trazas.push({
         x: serie.map(d => d.year),
@@ -401,8 +401,8 @@ function actualizarGraficoModal() {
     hovermode: "x unified",
     font: { family: "Plus Jakarta Sans, sans-serif", color: "#D4D4D8" },
     hoverlabel: {
-      bgcolor: "#111115",
-      bordercolor: "#F4A9C8",
+      bgcolor: "#0D100D",
+      bordercolor: "#1FF01A",
       font: { color: "#FFFFFF", size: 12 }
     },
     xaxis: {
@@ -414,7 +414,7 @@ function actualizarGraficoModal() {
     yaxis: {
       title: { text: unidad, font: { size: 11, color: "#A1A1AA" } },
       gridcolor: "rgba(255,255,255,0.06)",
-      zerolinecolor: "rgba(244,169,200,0.35)"
+      zerolinecolor: "rgba(31,240,26,0.35)"
     },
     legend: { orientation: "h", y: -0.22, font: { color: "#E4E4E7" } },
     paper_bgcolor: "rgba(0,0,0,0)",
@@ -435,7 +435,7 @@ function actualizarGraficoModal() {
         <td class="py-3 px-3.5 text-zinc-400">${d.unit}</td>
         <td class="py-3 px-3.5 text-zinc-300">${d.source}</td>
         <td class="py-3 px-3.5 whitespace-nowrap">
-          <a href="${d.url}" target="_blank" rel="noopener noreferrer" class="text-[#F4A9C8] font-semibold hover:underline transition">
+          <a href="${d.url}" target="_blank" rel="noopener noreferrer" class="text-[#1FF01A] font-semibold hover:underline transition">
             Verificar fuente ↗
           </a>
         </td>
