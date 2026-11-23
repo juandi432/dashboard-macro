@@ -3,121 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Macroeconómico — Ecuador e Internacional</title>
-  <!-- Diseño moderno gratuito (Tailwind CSS) -->
+  <title>Observatorio Macroeconómico — Ecuador e Internacional</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lector de archivos CSV (PapaParse) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <!-- Librería de gráficos interactivos (Plotly.js) -->
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+<body class="bg-slate-100 text-slate-800 font-sans antialiased">
 
-  <!-- Encabezado -->
-  <header class="bg-slate-900 text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <!-- Encabezado principal -->
+  <header class="bg-slate-950 text-white border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight">Dashboard Macroeconómico</h1>
-        <p class="text-slate-300 text-sm mt-1">Ecuador y comparación internacional (1994–2026) · Fuentes oficiales</p>
+        <div class="flex items-center gap-2.5">
+          <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+          <span class="text-xs font-semibold uppercase tracking-widest text-emerald-400">Observatorio Macroeconómico</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight mt-1">Dashboard Macroeconómico</h1>
+        <p class="text-slate-400 text-sm mt-1">Haz clic en cualquier gráfico para comparar países, filtrar fechas y consultar fuentes oficiales.</p>
       </div>
-      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 w-fit">
-        48 Indicadores · 11 Economías
-      </span>
+
+      <!-- Buscador rápido -->
+      <div class="w-full lg:w-80">
+        <label for="buscador" class="sr-only">Buscar indicador</label>
+        <div class="relative">
+          <input
+            id="buscador"
+            type="text"
+            placeholder="Buscar indicador (ej. PIB, inflación, EMBI)..."
+            class="w-full rounded-xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-400 pl-4 pr-9 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <span class="absolute right-3 top-2.5 text-slate-400 text-sm">⌕</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de pestañas por módulo -->
+    <div class="bg-slate-900/90 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 overflow-x-auto">
+        <div id="tabs-modulos" class="flex items-center gap-2 min-w-max"></div>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 space-y-6">
-
-    <!-- Tarjetas KPI de Ecuador -->
-    <section>
-      <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Panorama rápido de Ecuador (último dato disponible)</h2>
-      <div id="kpi-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Se llena automáticamente desde app.js -->
-      </div>
-    </section>
-
-    <!-- Panel de Controles / Filtros -->
-    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-5">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-        
-        <!-- Selector de Módulo -->
-        <div class="md:col-span-4">
-          <label for="select-modulo" class="block text-xs font-semibold text-slate-600 uppercase mb-1">1. Módulo temático</label>
-          <select id="select-modulo" class="w-full rounded-lg border-slate-300 border px-3 py-2 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none">
-            <option value="todos">Todos los módulos (48 indicadores)</option>
-            <option value="crecimiento">1. Cuentas Nacionales y Crecimiento</option>
-            <option value="laboral">2. Mercado Laboral</option>
-            <option value="inflacion">3. Inflación y Precios</option>
-            <option value="financiero">4. Condiciones Financieras y Riesgo País</option>
-            <option value="fiscal">5. Sector Fiscal (SPNF)</option>
-            <option value="externo">6. Sector Externo y Balanza de Pagos</option>
-            <option value="productividad">7. Productividad y Preparación Digital</option>
-          </select>
-        </div>
-
-        <!-- Selector de Indicador -->
-        <div class="md:col-span-5">
-          <label for="select-indicador" class="block text-xs font-semibold text-slate-600 uppercase mb-1">2. Indicador económico</label>
-          <select id="select-indicador" class="w-full rounded-lg border-slate-300 border px-3 py-2 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none"></select>
-        </div>
-
-        <!-- Tipo de Gráfico y Años -->
-        <div class="md:col-span-3 grid grid-cols-2 gap-2">
-          <div>
-            <label for="input-anio-ini" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Desde</label>
-            <input id="input-anio-ini" type="number" value="2000" min="1994" max="2026" class="w-full rounded-lg border-slate-300 border px-2.5 py-2 text-sm bg-slate-50" />
-          </div>
-          <div>
-            <label for="input-anio-fin" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Hasta</label>
-            <input id="input-anio-fin" type="number" value="2026" min="1994" max="2026" class="w-full rounded-lg border-slate-300 border px-2.5 py-2 text-sm bg-slate-50" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Selector de Países -->
-      <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <span class="block text-xs font-semibold text-slate-600 uppercase mb-2">3. Países a comparar (los botones en gris no tienen datos para este indicador)</span>
-          <div id="paises-container" class="flex flex-wrap gap-2"></div>
-        </div>
-        <div class="shrink-0">
-          <label for="select-tipo" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Visualización</label>
-          <select id="select-tipo" class="rounded-lg border-slate-300 border px-3 py-1.5 text-sm bg-slate-50">
-            <option value="line">Líneas</option>
-            <option value="bar">Barras</option>
-          </select>
-        </div>
-      </div>
-    </section>
-
-    <!-- Área del Gráfico -->
-    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-2 gap-2">
-        <h3 id="titulo-grafico" class="text-lg font-bold text-slate-900">Cargando datos...</h3>
-        <span id="unidad-grafico" class="text-xs font-medium px-2.5 py-1 rounded bg-blue-50 text-blue-700"></span>
-      </div>
-      <div id="grafico" class="w-full h-[440px]"></div>
-    </section>
-
-    <!-- Ficha Técnica y Fuentes Oficiales -->
-    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-      <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Fuentes oficiales y enlaces verificables del indicador seleccionado</h3>
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm text-left border-collapse">
-          <thead>
-            <tr class="border-b border-slate-200 text-xs uppercase text-slate-500">
-              <th class="py-2 pr-4">País</th>
-              <th class="py-2 pr-4">Unidad</th>
-              <th class="py-2 pr-4">Fuente Oficial</th>
-              <th class="py-2">Enlace / API</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-fuentes" class="divide-y divide-slate-100"></tbody>
-        </table>
-      </div>
-    </section>
-
+  <!-- Cuadrícula principal de módulos e indicadores -->
+  <main id="contenedor-principal" class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-10">
+    <div class="text-center py-20 text-slate-500 text-sm">Cargando los 48 indicadores macroeconómicos...</div>
   </main>
+
+  <!-- Ventana emergente (Modal) al hacer clic en un gráfico -->
+  <div id="modal-detalle" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
+    <div class="min-h-full flex items-center justify-center">
+      <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+        
+        <!-- Cabecera del Modal -->
+        <div class="bg-slate-900 text-white px-6 py-4 flex items-start justify-between gap-4">
+          <div>
+            <span id="modal-modulo" class="text-xs font-semibold uppercase tracking-wider text-blue-400"></span>
+            <h2 id="modal-titulo" class="text-xl font-bold mt-0.5"></h2>
+            <p id="modal-unidad" class="text-xs text-slate-300 mt-1"></p>
+          </div>
+          <button id="btn-cerrar-modal" class="rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 text-sm font-semibold transition cursor-pointer">
+            ✕ Cerrar
+          </button>
+        </div>
+
+        <!-- Controles de Fecha y País dentro del Modal -->
+        <div class="p-5 bg-slate-50 border-b border-slate-200 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+            
+            <!-- Rango de fechas -->
+            <div class="md:col-span-5 grid grid-cols-2 gap-3">
+              <div>
+                <label for="modal-anio-ini" class="block text-xs font-bold text-slate-600 uppercase mb-1">Año desde</label>
+                <input id="modal-anio-ini" type="number" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none" />
+              </div>
+              <div>
+                <label for="modal-anio-fin" class="block text-xs font-bold text-slate-600 uppercase mb-1">Año hasta</label>
+                <input id="modal-anio-fin" type="number" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none" />
+              </div>
+            </div>
+
+            <!-- Atajos rápidos de fecha -->
+            <div class="md:col-span-5 flex flex-wrap gap-1.5">
+              <button type="button" data-rango="todo" class="btn-rango px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 cursor-pointer">Todo el histórico</button>
+              <button type="button" data-rango="10" class="btn-rango px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 cursor-pointer">Últimos 10 años</button>
+              <button type="button" data-rango="5" class="btn-rango px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 cursor-pointer">Últimos 5 años</button>
+            </div>
+
+            <!-- Tipo de visualización -->
+            <div class="md:col-span-2">
+              <label for="modal-tipo" class="block text-xs font-bold text-slate-600 uppercase mb-1">Gráfico</label>
+              <select id="modal-tipo" class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm font-medium">
+                <option value="line">Líneas</option>
+                <option value="bar">Barras</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Selector de países -->
+          <div class="pt-3 border-t border-slate-200/80">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="text-xs font-bold text-slate-600 uppercase">Filtrar países disponibles:</span>
+              <div class="flex gap-2">
+                <button id="btn-solo-ecu" type="button" class="text-xs font-semibold text-blue-600 hover:underline cursor-pointer">Solo Ecuador</button>
+                <span class="text-slate-300">|</span>
+                <button id="btn-todos-paises" type="button" class="text-xs font-semibold text-blue-600 hover:underline cursor-pointer">Seleccionar todos</button>
+              </div>
+            </div>
+            <div id="modal-paises" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <!-- Gráfico interactivo ampliado -->
+        <div class="p-5">
+          <div id="modal-grafico" class="w-full h-[380px]"></div>
+        </div>
+
+        <!-- Fuentes verificables -->
+        <div class="px-6 pb-6">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Fuentes oficiales de los países seleccionados</h3>
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="min-w-full text-xs text-left">
+              <thead class="bg-slate-50 text-slate-600 uppercase border-b border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-3">País</th>
+                  <th class="py-2.5 px-3">Unidad</th>
+                  <th class="py-2.5 px-3">Fuente Oficial</th>
+                  <th class="py-2.5 px-3">Enlace</th>
+                </tr>
+              </thead>
+              <tbody id="modal-fuentes" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
